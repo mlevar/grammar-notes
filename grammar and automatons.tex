@@ -5,7 +5,6 @@
 %
 % To predlogo lahko spremeniš v PDF dokument s pomočjo programa
 % pdflatex, ki je del standardne instalacije LaTeX programov.
-
 \documentclass[a4paper,11pt]{article}
 \usepackage{a4wide}
 %\usepackage{fullpage}
@@ -21,46 +20,27 @@
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{caption}
-
 \renewcommand{\baselinestretch}{1.2} % za boljšo berljivost večji razmak
 \renewcommand{\appendixpagename}{Priloge}
-
 \newcommand{\ang}[1]{(angl. \emph{#1})}
-
 \lstset{ % nastavitve za izpis kode, sem lahko tudi kaj dodaš/spremeniš
 language=Python,
 basicstyle=\footnotesize,
 basicstyle=\ttfamily\footnotesize\setstretch{1},
 backgroundcolor=\color{light-gray},
 }
-
-
-\title{3. Avtomati in gramatike\\ \textbf{WORK IN PROGRESS}\\ trenutno na 50\%}
+\title{3. Avtomati in gramatike\\ WORK IN PROGRESS\\ trenutno na 97\%}
 \begin{document}
-
 \maketitle
-
 \section{Uvod}
-
-Zapiski so osnovani na prosojnicah Automata, grammars and languages - very short introduction in istoimenski knjigi.
-
-\subsection{Pregled}
-
-\subsection{Motivacija}
-Gramatike -- formalni zapisi jezikov -- so ključno povezani z računalništvom, saj so osnova vseh programskih (in tudi naravnih) jezikov. 
-
-Teorija avtomatov želi s preučevanjem abstraktnih računskih strojev -- avtomatov -- spoznati kje so meje le-teh in česa so zmožni izračunati. Verjetno najbolj znan primerek takega stroja je Turingov stroj. Povezava med avtomati in gramatikami je
-
-
-
-
+Zapiski so osnovani na prosojnicah Automata, grammars and languages - very short introduction in istoimenski knjigi. Zdijo se mi bistveno preveč podrobni glede na naše potrebe, po drugi strani pa se prosojnice marsikje sklicujejo na poglavja knjige, ki v prosojnicah niso bila obdelana. Prosojnice so v večini ena velika zmešnjava, skušal sem jih povzeti razmeroma razumljivo.
+\tableofcontents{}
+\pagebreak
 \section{Končni avtomati}
-
 Končni avtomati so končne zbirke stanj s pravili za prehajanje med njimi. 
 Z njimi se je na začetku skušali modelirati delovanje vezij, posamezno stanje avtomata je predstavljalo neko stanje internih bitov vezja. 
 Najpogosteje so predstavljeni z grafi, v katerih so vozlišča stanja grafa, povezave pa možni prehodi.
 Večinoma povezave označimo s pogoji, ki privedejo do tranzicije (primer~\ref{fa_1}).
-
 \begin{figure}[h!tbp]
 \begin{center}
 \includegraphics[width=110mm]{img/fa_1.png}
@@ -68,9 +48,7 @@ Večinoma povezave označimo s pogoji, ki privedejo do tranzicije (primer~\ref{f
 \label{fa_1}
 \end{center}
 \end{figure}
-
-Zapis avtomatov v programski kodi je problematičen s programskimi jeziki, ki ne podpirajo skokov (primer v C++, ki uporablja \emph{goto}~\ref{c1}). Zaradi tega se avtomatov ponavadi ne programira na tako nizkem nivoju, temveč se uporabi višje-nivojske konstrukte kot npr. regularne izraze, s katerimi lahko izrazimo željen avtomat.
-
+Zapis avtomatov v programski kodi je problematičen s programskimi jeziki, ki ne podpirajo skokov (primer v C++, ki uporablja \emph{goto}~\ref{c1}). Zaradi tega se avtomatov po navadi ne programira na tako nizkem nivoju, temveč se uporabi višje-nivojske konstrukte kot npr. regularne izraze, s katerimi lahko izrazimo željen avtomat.
 \begin{lstlisting}[caption={Primer pretvorbe avtomata~\ref{fa_1} v programsko kodo}, label={c1}]
 2: /* i seen */
 	c = getNextInput();
@@ -80,22 +58,14 @@ Zapis avtomatov v programski kodi je problematičen s programskimi jeziki, ki ne
 3: /* "in" seen */
 	. . .
 \end{lstlisting}
-
 \textbf{Abeceda} \ang{alphabet} je končna neprazna množica simbolov (npr: ASCII, Unicode, \{0,1\}, \{a,b,c\}), označimo jo s $\Sigma$.
-
 \textbf{Beseda} (tudi niz, \ang{string, word}) je končno zaporedje simbolov iz neke abecede. Množico besed, katere člani so elementi abecede $\Sigma$, označimo s $\Sigma^*$. Prazno besedo (besedo dolžine 0) označimo z $\epsilon$. Primer: \{0,1\}* = \{$\epsilon$, 0, 1, 00, 01, 10, 11, 000, 001, \ldots \} (0 je v abecedi simbol in v seznamu besed beseda, pomen je odvisen od konteksta.
 Dolžina besede $w$ je označena s $|w|$, npr. $|001|=3, |\epsilon|=0$.
-
 Potenca abecede $\Sigma^x$ predstavlja množico vseh možnih besed  dolžine $x$. $\Sigma^0 = \{\epsilon\}$ za vsako abecedo $\Sigma$, saj je $\epsilon$ edina beseda dolžine 0. Sicer pa je za binarno abecedo $\Sigma^2 = \{00,01,10,11\}$.
-
 \textbf{Jezik} \ang{language} je podmnožica $\Sigma^*$ neke abecede $\Sigma$. Če je $\Sigma$ abeceda in $L \subseteq \Sigma^*$, potem je $L$ jezik preko $\Sigma$ \ang{$L$ is a language over $\Sigma$}. Primer: jezik binarnih besed sestavljenih iz $n$ ničel in nato $n$ enic za $n \geq 0$: $\{\epsilon,01,0011,000111,\ldots\}$.
-
 $\Sigma^*$ je jezik preko vsako abecedo $\Sigma$, $\emptyset$ (prazen jezik) je jezik preko vsake abecede, enako velja še za $\{\epsilon\}$; $\emptyset \neq \{\epsilon\}$.
-
 \subsection{Deterministični končni avtomati}
-
 Deterministični končni avtomati \ang{Deterministic Finite Automata -- DFA} so formalizem za definicijo jezikov. Definiramo jih kot $A = (Q, \Sigma, \sigma, q_0, F)$, podrobneje:
-
 \begin{enumerate}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item končne množice stanj $Q$
 \item vhodne abecede $\Sigma$
@@ -103,9 +73,7 @@ Deterministični končni avtomati \ang{Deterministic Finite Automata -- DFA} so 
 \item začetnega stanja $q_0 \in Q$
 \item množice končnih stanj $F \subseteq Q$
 \end{enumerate}
-
 Prehodna funkcija sprejme stanje in vhodni simbol $\sigma(q, a)$ in vrne stanje, v katerega se DFA ob teh vhodnih podatkih premakne. V grafu DFA predstavimo z vozlišči -- stanji in povezavami med njimi, ki predstavljajo prehodno funkcijo. Začetno stanje označuje puščica \emph{start}, končna stanja pa so dvakrat obkrožena. Primer lahko vidimo na sliki~\ref{fa_2}
-
 \begin{figure}[h!tbp]
 \begin{center}
 \includegraphics[width=110mm]{img/fa_2.png}
@@ -113,9 +81,7 @@ Prehodna funkcija sprejme stanje in vhodni simbol $\sigma(q, a)$ in vrne stanje,
 \label{fa_2}
 \end{center}
 \end{figure}
-
 Alternativno lahko graf predstavimo s tabelo prehodov~\ref{fa_3}, v kateri so stolpci vhodni simboli, vrstice pa stanja. Začetno stanje je označeno s puščico, končna pa z zvezdo. 
-
 \begin{table}[htbp]
   \centering
     \begin{tabular}{r|rr}
@@ -125,27 +91,19 @@ Alternativno lahko graf predstavimo s tabelo prehodov~\ref{fa_3}, v kateri so st
     B*  & A & C\\
     C$\;\,$  & C & C\\
     \end{tabular}%
-
     \caption{Tranzicijska tabela avtomata~\ref{fa_2}}
       \label{fa_3}%
 \end{table}%
-
-
 Rezultat besede na vhodu DFA lahko opišemo z razširitvijo prehodne funkcije na stanje in besedo. 
-Osnova je $\sigma(q, \epsilon) = q$, preostanek besede pa rešimo z indukcijo: $\sigma(q, wa) = \sigma(\sigma(q, w), a)$ -- $w$ je beseda in $a$ vhodni simbol\footnote{V knjigi med obema fuknkcijama ločujejo, razširjena je označena z $\hat{\sigma}$. 
-V prosojnicah je navedeno, da načeloma ločevanje ni potrenbo, daj je razlika med obema jasna}. Po konvenciji besede označujemo z $w, x, y$ ter posamezne simbole z $a, b, c$.
-
+Osnova je $\sigma(q, \epsilon) = q$, preostanek besede pa rešimo z indukcijo: $\sigma(q, wa) = \sigma(\sigma(q, w), a)$ -- $w$ je beseda in $a$ vhodni simbol\footnote{V knjigi med obema funkcijama ločujejo, razširjena je označena z $\hat{\sigma}$. 
+V prosojnicah je navedeno, da načeloma ločevanje ni potrebno, daj je razlika med obema jasna}. Po konvenciji besede označujemo z $w, x, y$ ter posamezne simbole z $a, b, c$.
 \subsubsection{Jezik DFA}
-
 Avtomati vseh vrst definirajo jezike. 
 Če je $A$ avtomat, je $L(A)$ njegov jezik. Za DFA avtomate je $L(A)$ množica besed, ki opisujejo poti os začetnega do končnega stanja. 
 Formalno: $L(A)$ vsebuje takšno množico besed $w$, da je $\sigma(q_0, w)$ v $F$.
  Primer: beseda $101$ je v jeziku avtomata~\ref{fa_2}, ker velja $\{w \;|\; w$ je v $\{0,1\}^*$ in $w$ nima dveh zaporednih 1\}.
-
-Pogosto moramo dokazati, da sta dva opisa množic enaka množica. V tem primeru imamo množico \emph{jezik opazovanega DFA} ($S$) in množico \emph{množica besed ničel in enk brez zaporednih enk} ($T$). Da bi dokazali $S=T$, moramo dokazai $S \subseteq T$ in $T \subseteq S$, za vsako besedo $w$: $w \in S \Rightarrow w \in T  \wedge w \in T \Rightarrow w \in S$. 
-
+Pogosto moramo dokazati, da sta dva opisa množic enaka množica. V tem primeru imamo množico \emph{jezik opazovanega DFA} ($S$) in množico \emph{množica besed ničel in enk brez zaporednih enk} ($T$). Da bi dokazali $S=T$, moramo dokazati $S \subseteq T$ in $T \subseteq S$, za vsako besedo $w$: $w \in S \Rightarrow w \in T  \wedge w \in T \Rightarrow w \in S$. 
 Najprej skušamo dokazati $S \subseteq T$, pri tem imejmo v mislih avtomat~\ref{fa_2}.
-
 \begin{enumerate}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item Če $\sigma(A, w)=A$, potem $w$ nima zaporednih enk in se ne konča z 1
 \item Če $\sigma(A, w)=B$, potem $w$ nima zaporednih enk in se z 1
@@ -154,12 +112,9 @@ Najprej skušamo dokazati $S \subseteq T$, pri tem imejmo v mislih avtomat~\ref{
 \item Osnova: $|w|=0; w=\epsilon$.  (1) drži, saj $\epsilon$ nima enk, (2) tudi drži, saj prvi del implikacije ni izpolnjen ($\sigma(A, w)\neq B$).
 \item Predpostavimo, da (1) in (2) držita za besede krajše od $w$, kjer je $|w|$ vsaj 1. Ker $w$ ni prazna beseda, lahko zapišemo $w=xa$, kjer je a zadnji simbol besede, $x$ pa beseda pred njo. Induktivna hipoteza za $x$ drži.
 \item Dokazati moramo, da (1) in (2) držita za $w=xa$.
-
 Če (1) drži, potem $w$ nima zaporednih enk in se ni končal z ena. Ker (1) drži, mora biti $\sigma(A, x)$ enak $A$ ali $B$ in $a$ mora biti 0. Zaradi induktivne hipoteze $x$ nima zaporednih enk, torej tudi $w$ nima zaporednih enk in se ne konča z 1 (v tem primeru je $w=x0$).
-
 Če drži (2), potem $w$ nima zaporednih enk in se konča z ena. Ker velja $\sigma(A, w)=B$, mora veljati $\sigma(A, x)=A$ in $a=1$. Zaradi induktivne hipoteze $x$ nima zaporednih enk in se ne konča z ena, torej tudi $w$ nima zaporednih enk ali se konča z ena (b tem primeru je $w=x1$).
 \end{itemize}
-
 V drugem delu dokaza skušamo pokazati, da velja $T \subseteq S$.
 \begin{itemize}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item Če $w$ nima zaporednih enk, potem avtomat sprejme tak $w$. Uporabimo \emph{kontrapozitiv (Če ne Y potem ne X)} \ang{contrapositive} te hipoteze -- če avtomat ne sprejme $w$, potem $w$ vsebuje 11. 
@@ -167,22 +122,15 @@ V drugem delu dokaza skušamo pokazati, da velja $T \subseteq S$.
 $\sigma(A, w)=C$ velja, če je $w=x1y$ in $x$ rezultira v stanju $B$, $y$ pa je preostanek besede, ki sledi po doseženem stanju $C$.
 \item Če velja $\sigma(A, x)=B$, potem mora veljati $x=z1$ za nek $z$, saj se besede, ki dosežejo $B$ končajo z 1. $w=x1y \Rightarrow w=z11y$, torej beseda $w$, ki doseže stanje $C$, vsebuje 11.
 \end{itemize}
-
-
 \subsubsection{Regularni jeziki}
-
 Jezik $L$ je \textbf{regularen}, če ga sprejme nek DFA. Pomembno je, da ta DFA sprejme \emph{samo} besede jetika L in ne tudi drugih. 
 Nekateri jeziki niso regularni -- regularni jeziki DFA ne morejo vsebovati neskončno mnogo elementov. Primeri neregularnih jezikov:
-
 \begin{itemize}
 \item $L_1 = \{0^n1^n | n \geq 1\}$ --
-Jezik $L_1$ vsebuje vse besede sestavoljene iz $n$ ničel, ki jim sledi $n$ enk, pri katerij je $n$ vsaj ena: $L_1 = \{01, 0011, 000111,\ldots \}$.
-
+Jezik $L_1$ vsebuje vse besede sestavljene iz $n$ ničel, ki jim sledi $n$ enk, pri kateri je $n$ vsaj ena: $L_1 = \{01, 0011, 000111,\ldots \}$.
 \item $L_2 = \{w | w \in \{(,)\}^* $ in $w$ je poravnan$\}$ -- Abeceda $\{(,)\}^*$ vsebuje oklepaje in poravnani oklepaji imajo enako število oklepajev in zaklepajev: $L_2 = \{(), (()), (()()), \ldots \}$
 \end{itemize}
-
-Zakaj ti jeziki niso regularni lahko razumemo s pomočju leme o napihovanju \ang{pumping lemma}. Izpolnjevanje leme je namreč pogoj vseh regularnih jezikov.
-
+Zakaj ti jeziki niso regularni lahko razumemo s pomočjo leme o napihovanju \ang{pumping lemma}. Izpolnjevanje leme je namreč pogoj vseh regularnih jezikov.
 \begin{description}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item[\textbf{Lema o napihovanju za regularne jezike}]  Naj bo $L$ regularen jezik. Obsajati mora konstanta $n$, odvisna od $L$, da za vsako besedo $w \in L$, $|s| \geq n$ lahko najdemo razdelitev v tri besede $w=xyz$, da velja:
 \begin{enumerate}[topsep=0pt,itemsep=0pt,parsep=0pt]
@@ -190,33 +138,22 @@ Zakaj ti jeziki niso regularni lahko razumemo s pomočju leme o napihovanju \ang
 \item $|xy| \leq n$
 \item Za vsak $k\geq 0$ $xy^kz \in L$
 \end{enumerate}
-
 Vedno torej lahko najdemo neprazno besedo $y$ znotraj prve polovice $w$, ki jo lahko napihnemo (ponovimo $k$-krat ali izbrišemo v primeru $k=0$ in ta beseda ostane v jeziku $L$\footnote{Dokaz leme lahko najdemo v knjigi Introduction to Automata Theory na strani 127.}.
 \end{description}
-
 Z uporabo leme o napihovanju lahko dokažemo, da jezik $L_1$ ni regularen. Če bi bil regularen, bi besedo $w=0^n1^n$ lahko zapisali kot $w=xyz$, pri čemer bi $x$ in $y$ bili ničli, saj $y$ ne sme biti prazen. Če $y$ napihnemo, beseda $w=xyyz$ ni več iz jezika $L$, saj ima več ničel kot enk.
-
 Mogoče bolj intuitivna razlaga je naslednja: Avtomat jezika $L_1$ je sestavljen iz končnega števila $k$ stanj. Naj ta avtomat na vhodu sprejme $k$ ničel, nahaja se torej v nekem stanju po procesiranih $k+1$ različnimi vhodnimi vrednostmi ($\epsilon, 0, 00, \ldots, 0^k$). 
 Ker vsebuje samo $k$ stanj, sta neki vrednosti $0^i$ in $0^j$ morali znajti v istem stanju $q$. Recimo, da po branju $i$ ali $j$ ničel avtomat na vhodu prične prejemati enke. Če je avtomat sprejel $i$ ničel, se po sprejetju $i$ enk mora nahajati v končnem stanju. Pri sprejetju $j$ ničel pa po $i$ enicah ne sme biti v končnem stanju. Ker je bil pri $i$ in pri $j$ v enakem stanju $q$ in si ne more zapomniti, koliko ničel je sprejel -- $i$ ali $j$, lahko torej z $j$ ničlami, ki jim sledi $i$ enk pridemo do končnega stanja in avtomat sprejme besedo, ki ni del njegovega jezika. Ni torej mogoče zgraditi DFA, ki bi zadostil jeziku $L_1$.
-
 Primera regularnih jezikov:
 \begin{itemize}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item $L_3 = \{w | w \in {0,1}^*$ in $w$ je kot binarno število deljiv s 23$\}$ --
 Avtomat jezika $L_3$ sestavlja 23 stanj, ki predstavljajo števila od 0 do 22 -- ostanki deljenja s 23. Začetno in edino končno stanje je 0\footnote{Podroben opis izgradnje prehodne funkcije je v prosojnicah na strani 49.}. 
-
 \item $L_4 = \{w | w \in {0,1}^*$ in $w$ je kot binarno število v obratnem vrstnem redu deljiv s 23$\}$ --
 Avtomat jezika $L_4$ je zelo težko sestaviti, a teorem pravi, da je nasprotje \ang{reverse} regularnega jezika tudi regularni jezik in torej avtomat mora obstajati.
-
 \end{itemize}
-
 \subsection{Nedeterministični končni avtomati}
-
 Nedeterministični končni avtomati \ang{Nondeterministic Finite Automata -- NFA} se lahko istočasno nahajajo v več stanjih. Začnejo v enem začetnem stanju in nato preverijo vse možnosti, ki bi lahko vodile h končnemu stanju (predstavljamo si jih lahko kot grafe, ki smo jih preiskovali s preiskovalnimi algoritmi). 
-Formalno so zapisani enako kot deterministični avtomati -- $A = (Q, \Sigma, \sigma, q_0, F)$, bistvena razika je v prehodni funkciji, ki namesto enega predstavlja množico naslednjih stanj. Osnovni prehod je $\sigma(q, \epsilon) = {q}$, iz njega nato z indukcijo sledijo ostale povezave: $ \sigma(q, wa) = \bigcup_{p \in \sigma(q,w)} \sigma(p,a)$. 
-
+Formalno so zapisani enako kot deterministični avtomati -- $A = (Q, \Sigma, \sigma, q_0, F)$, bistvena razlika je v prehodni funkciji, ki namesto enega predstavlja množico naslednjih stanj. Osnovni prehod je $\sigma(q, \epsilon) = {q}$, iz njega nato z indukcijo sledijo ostale povezave: $ \sigma(q, wa) = \bigcup_{p \in \sigma(q,w)} \sigma(p,a)$. 
 Primer NFA so premiki na šahovnici. Posamezna stanja so polja šahovnice, abeceda pa ${r, b}$, ki predstavljata premik v sosednje črno oz. rdeče polje. Začetno in končno stanje sta nasprotna vogala šahovnice. Iz začetnega stanja 1 imamo prehod v dve možni naslednji stanji, iz naslednje množice stanj vse možne prehode naprej,\ldots (primer je na sliki~\ref{fa_4}).
-
-
 \begin{figure}[h!tbp]
 \begin{center}
 \includegraphics[width=110mm]{img/fa_4.png}
@@ -224,43 +161,26 @@ Primer NFA so premiki na šahovnici. Posamezna stanja so polja šahovnice, abece
 \label{fa_4}
 \end{center}
 \end{figure}
-
 \subsubsection{Jezik NFA}
-
 NFA sprejme besedo $w$, če je v množici $\sigma(q_0, w)$ vsaj eno končno stanje. Jezik NFA je kot pri DFA množica stanj, ki jih avtomat sprejme. 
-
 Vsak DFA lahko spremenimo v NFA tako, da le-ta sprejme enak jezik. Prehodno funkcijo $\sigma_D(q, a)=p$ spremenimo v $\sigma_N(q, a)=\{p\}$. Ustvarjen NFA se vedno nahaja v samo enem stanju, enakem, kot bi ga po enaki vhodni besedi imel DFA. 
-
 Velja tudi obratna relacija, vsak NFA lahko pretvorimo v DFA, ki bo sprejel enak jezik. Za NFA s $Q$ stanji, vhodom $\Sigma$, tranzicijsko funkcijo $\sigma_N$, začetnim stanjem $q_0$ in končnimi stanji $F$ ustvarimo ekvivalenten DFA z $2^Q$ stanji (množica vseh podmnožic $Q$) in pripadajočo prehodno funkcijo $\sigma_D$. Ostali parametri ostanejo enaki.
-
 \subsection{Povzetek}
-
 DFA in NFA sprejmejo enako množico jezikov, regularne jezike. NFA lažje zasnujemo, saj imajo eksponentno manj stanj kot DFA, a NFA ni mogoče implementirati, DFA pa lahko.
-
-
 \pagebreak
-
 \section{Regularni izrazi}
-
 Regularni izrazi \ang{regular expressions -- RE} so algebraičen način opisa jezikov. Opisujejo natanko regularne jezike. Če je $E$ regularni izraz, je $L(E)$ jezik, ki ga definira.
-
 \subsection{Definicija}
-
 \begin{description}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item[Osnova 1:] Če je $a$ katerikoli simbol, potem je $\mathbf{a}$ RE in $L(\mathbf{a}) = \{a\}$. ($\{a\}$ je jezik, ki vsebuje eno besedo in ta beseda je dolžine 1)
-
 \item[Osnova 2:] $\epsilon$ je RE in $L(\epsilon) = \{\epsilon\}$. 
-
 \item[Osnova 3:] $\emptyset$ je RE in $L(\emptyset) = \{\emptyset\}$. 
 \\
 \item[Indukcija 1:] Če sta $E_1$ in $E_2$ regularna izraza, potem je $E_1+E_2$ regularni izraz in $L(E_1+E_2)=L(E_1) \cup L(E_2)$.
-
 \item[Indukcija 2:] Če sta $E_1$ in $E_2$ regularna izraza, potem je $E_1 E_2$ regularni izraz in $L(E_1 E_2)=L(E_1)L(E_2)$. (konkatenacija -- množica takih besed $wx$, da je $w \in L(E_1)$ in $x \in L(E_2)$)
-
 \item[Indukcija 3:] Če je $E$ regularni izraz, potem je $E^*$ regularen izraz in je $L(E^*) = (L(E))^*$. (zaprtje \ang{closure, Kleene closure} -- množica besed $w_1 w_2 \ldots w_n)$ za $n\geq 0$, pri kateri je $w_i \in L(E)$; če je $n=0$ je beseda $\epsilon$)
 \end{description}
-
-Na zaporedje opreacij lahko vplivamo z oklepaji, sicer pa si po prednosti sledijo $~^*$, konkatenacija in $+$. Nekaj primerov:
+Na zaporedje operacij lahko vplivamo z oklepaji, sicer pa si po prednosti sledijo $~^*$, konkatenacija in $+$. Nekaj primerov:
 \begin{itemize}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item $L(\mathbf{01}) = \{01\}$
 \item $L(\mathbf{01+0}) = \{01, 0\}$
@@ -268,9 +188,7 @@ Na zaporedje opreacij lahko vplivamo z oklepaji, sicer pa si po prednosti sledij
 \item $L(\mathbf{0}^*) = \{\epsilon, 0, 00, \ldots\}$
 \item $L(\mathbf{(0+10)^*(\epsilon+1}) =$ vse besede ničel in enk z dvema zaporednima enkama
 \end{itemize}
-
 Pokazati želimo, da za vsak ER obstaja avtomat, ki sprejme enak jezik; to bomo pokazali z najmočnejšimi $\epsilon$-NFA avtomati\footnote{Teh avtomatov prosojnice ne obravnavajo, so pa v knjigi.}. Pokazati želimo tudi obratno, da za vsak avtomat obstaja RE, ki definira njegov jezik, to bomo storili z DFA kot najbolj restriktivnim tipom avtomatov.
-
 \begin{figure}[h!tbp]
 \begin{center}
 \includegraphics[width=110mm]{img/re_0.png}
@@ -278,10 +196,7 @@ Pokazati želimo, da za vsak ER obstaja avtomat, ki sprejme enak jezik; to bomo 
 \label{re_0}
 \end{center}
 \end{figure}
-
 Pretvorbo opravimo s prevedbo osnovnih konstruktov~\ref{re_1} in naprednih operacij~\ref{re_2} v regularnem izrazu. Ustvarjen konstrukt je avtomat posebne oblike~\ref{re_0}. 
-
-
 \begin{figure}[!ht]
 \begin{minipage}{0.49\linewidth}
   \includegraphics[width=75mm]{img/re_5.png}
@@ -293,65 +208,38 @@ Pretvorbo opravimo s prevedbo osnovnih konstruktov~\ref{re_1} in naprednih opera
   \caption{Pretvorba naprednih konstruktov: unije (a), konkatenacije (b) in zaprtja (c)}\label{re_2}
 \end{minipage}
 \end{figure}
-
 Pretvorba iz DFA v RE je zaporedje čudnih indukcij, ki so podobne opisanim na slikah, le v obratnem vrstnem redu.
-
 \subsection{Algebraična pravila regularnih izrazov}
-
 Unija in konkatenacija se obnašata podobno kot seštevanje in množenje. + je komutativen in asociativen, konkatenacija je asociativna, a \textbf{ne} komutativna, konkatenacijo lahko distribuiramo preko +.
-
 \begin{description}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item[$\emptyset$ je nevtralni element\footnote{Nevtralni in nasprotni element povzeta po Boolovi algebri, sicer sta to \emph{identity} in \emph{annihilator}.} za +] $R + \emptyset = R$
 \item[$\epsilon$ je nevtralni element konkatenacije] $\epsilon R = R \epsilon = R$
 \item[$\emptyset$ je nasprotni element konkatenacije] $\emptyset R = R \emptyset = \emptyset$
 \end{description}
-
 \pagebreak
-
 \section{Regularni jeziki}
-
 \textbf{Razred jezika} \ang{language class} je množica jezikov. Obstaja jih več vrst, trenutno poznamo samo regularne jezike. Razredi jezikov imajo dva pomembna tipa lastnosti: odločitvene lastnosti \ang{decision properties} in lastnosti zaprtij \ang{closure properties}. Obstaja tudi več načinov predstavitve jezikov, načeloma jih delimo na formalne in neformalne. Primeri formalnih jezikov je zapis le-teh z regularnimi izrazi ali avtomati. Neformalen zapis pa je logični izraz ali opis besed, npr. \emph{"množico sestavljajo besede z enakim številom enk in ničel"}.
-
 Sem formalno spada tudi zgoraj opisana lema o napihovanju, ki se jo uporablja za preverjanje regularnosti nekega jezika.
-
 \subsection{Odločitvene lastnosti}
-
 Odločitvena lastnost razreda jezikov je algoritem, ki na podlagi formalnega zapisa jezika ugotovi, ali neka lastnost drži ali ne (npr. je jezik $L$ prazen?).
-
 Zakaj so odločitvene lastnosti pomembne? Z njimi ugotavljamo pomembne lastnosti preučevanih sistemov. Če na primer govorimo o protokolih, lahko, ko jih zapišemo kot formalne jezike, vprašanja o njih spremenimo v vprašanja o jezikih, npr. "Ali lahko protokol odpove?" postane "Je jezik neprazen?" in "Ali se protokol zaključi?" postane "Je jezik končen?". 
-
 Odločitvene lastnosti so lahko pomembne tudi, ko želimo poiskati najmanjšo predstavitev nekega jezika (minimalen avtomat ali najkrajši RE). Če ne moremo ugotoviti, ali sta dva jezika enaka (oz. bolj točno ali ti dve predstavitvi definirata enak jezik), tudi ne moremo ugotoviti, kateri je manjši.
-
 Problemi, na katere se odločitvene lastnosti tipično prevedejo so naslednji:
-
 \begin{description}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item[Vprašanje vsebovanosti] Je beseda $w$ element regularnega jezika $L$? \\
 Problem je hitro rešljiv, če imamo $L$ predstavljen z DFA $A$. Simuliramo zaporedje stanj glede na simbole $w$ in če pridemo do končnega stanja, je $w \in L$.
-
 \item[Problem praznosti] Ali v regularnem jeziku $L$ sploh so besede? \\
 Za jezik predstavljen z DFA zgradimo graf tranzicij in izračunamo vsa stanja, ki so dosegljiva iz začetnega stanja. Če je v dosegljivih stanjih vsebovano katero od končnih stanj $F$, jezik ni prazen.
-
 \item[Problem neskončnosti] Je regularen jezik $L$ neskončen?
 Zgradimo DFA jezika z $n$ stanji. Če jezik vsebuje besedo dolžine $n$ ali več, je zagotovo neskončen (to pomeni, da imamo nekje zanko). Sicer je jezik zagotovo končen.
-
 V nadaljevanju je v prosojnicah (stran 101) opisan algoritem za iskanje neskončnosti, ki pa ga nato avtorji označijo za neuporabnega in predlagajo iskanje ciklov, ki je lažje in preverjeno.
-
 \end{description}
-
-
 \subsection{Lastnosti zaprtja}
-
 Lastnosti zaprtij razreda jezikov nam zagotavljajo, da rezultati operacij med jeziki v razredu ustvarjajo jezike znotraj tega razreda. Primer: regularni jeziki so zaprti za unijo, konkatenacijo in zaprtje.
-
-
 \section{Kontekstno neodvisne gramatike}
-
 Kontekstno neodvisna gramatika \ang{Context-Free Grammars -- CFG} je notacija za opisovanje jezikov. Je močnejša od končnih avtomatov in regularnih izrazov, a še vedno ne more izraziti vseh mogočih jezikov. Uporabna je za izražanje gnezdenih struktur, npr. oklepajev v programskih jezikih. Primeri rabe CFG: DTD sheme, prevajalniki.
-
 Osnovna ideja je raba spremenljivk, ki predstavljajo množice besed. Te spremenljivke so definirane rekurzivno. Rekurzivna (produkcijska) pravila vsebujejo samo konkatenacijo, njihove alternative pa dovoljujejo tudi unijo.
-
 Primer: CFG za $\{0^n1^n | n \geq 1 \}$. Sestavljen je iz dveh produkcij: $S \rightarrow 01, S \rightarrow 0S1$. 01 je v osnovnem jeziku, z indukcijo pa lahko tudi pokažemo, da če je $w$ v jeziku, je v jeziku tudi $0w1$.
-
 CFG so definirane z naslednjimi termini:
 \begin{description}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item[terminali \ang{terminals}] -- simboli abecede jezika, ki ga definiramo (v zgornjem primeru so simboli iz $\{0,1\}$)
@@ -365,19 +253,182 @@ a, b, c,\ldots so terminali\\
 \ldots, w, x, y, z so besede samo terminalov\\
 \ldots, $\alpha, \beta, \gamma$ so besede terminalov in spremenljivk\\
 \end{description}
-
-
-
-
-
-
-
-
-
+Nove besede jezika CFG izpeljemo \ang{derive} iz začetnega simbola z zaporednim zamenjevanjem neke spremenljivke $A$ z desno vrednostjo njenih produkcij. Če imamo produkcijo $A\rightarrow \gamma$ lahko izpeljemo $\alpha A \beta \Rightarrow \alpha \gamma \beta$. Enako lahko na podlagi prejšnjega primera izpeljemo $S \Rightarrow 0S1 \Rightarrow 00S11 \Rightarrow 000111$. Izpeljavo lahko iteriramo in simbol $\Rightarrow^*$ pomeni nič ali več iteracij. Osnova je $\alpha \Rightarrow^* \alpha$ za katerokoli besedo $\alpha$, z indukcijo lahko sklepamo, da če držita $\alpha \Rightarrow^* \beta$ in $\beta \Rightarrow \gamma$, potem drži tudi $\alpha \Rightarrow^* \gamma$. Z iterativno derivacijo lahko skrajšamo zapis derivacij, npr. zgornja derivacija se lahko spremeni iz  $S \Rightarrow 0S1 \Rightarrow 00S11 \Rightarrow 000111$ v  $S \Rightarrow^* 000111$. 
+Besedam, pridobljenim iz spremenljivk in/ali terminalov z derivacijo iz začetnega simbola, pravimo stavčne forme \ang{sentential forms}, formalno je $\alpha$ stavčna forma če in samo če velja $S \Rightarrow^* \alpha$. Če je $G$ kontekstno neodvisna gramatika, potem je $L(G)$, njen jezik, enak $\{w | S \Rightarrow^* w\}$, pri čemer morata biti $w$ beseda brez spremenljivk in $S$ začetni simbol. Primer: $G$ ima produkciji $S\rightarrow\epsilon$\footnote{$\epsilon$ je legalna desna stran.} in $S\rightarrow 0S1$, $L(G) = \{ 0^n1^n | n \ge 0\}$.
+Derivacije nam omogočajo, da zamenjamo katerokoli od spremenljiv v besedi, to vodi do velikega možnega števila derivacij za nekatere stringe. Če vedno za zamenjavo izberemo najbolj levo spremenljivko, dobimo strožje definirane derivacije.
+Najbolj leve derivacije \ang{leftmost derivations} formalno definiramo z $wA\alpha\Rightarrow_{lm}w\beta\alpha$, pri katerih je $w$ beseda terminalov in $A\rightarrow\beta$ uporabljena produkcija. Te iteracije lahko tudi iteriramo in $\alpha\Rightarrow_{lm}^*\beta$ velja, če $\alpha$ postane $\beta$ po 0 ali več korakih $\Rightarrow_{lm}$. 
+Enako logiko lahko uporabimo tudi za najbolj desne derivacije \ang{rightmost derivations}. Primer: $S\rightarrow SS|(S)|()$, $S\Rightarrow_{lm}SS\Rightarrow_{lm}(S)S\Rightarrow_{lm}(())S\Rightarrow_{lm}(())()$, torej velja tudi $S\Rightarrow_{lm}^*(())()$. Protiprimer, ki je derivacija, a ne najbolj leva: $S \Rightarrow SS \Rightarrow S() \Rightarrow (S)()\Rightarrow(())()$.
+Jezik, ki ga definira CFG, je kontekstno neodvisen jezik \ang{Context-Free Language -- CFL}. CFL torej niso regularni jeziki.
+\subsection{Razčlenitvena drevesa} 
+Razčlenitvena drevesa \ang{parse trees} so drevesa označena s simboli nekega CFG. Listi drevesa so terminali ali $\epsilon$, notranja vozlišča so označena s spremenljivkami (otroci so označeni z desnim delom produkcije starša), koren drevesa pa je označen z začetnim simbolom.
+\begin{figure}[h!tbp]
+\begin{center}
+\includegraphics[width=70mm]{img/cfg_1.png}
+\caption{Primer sintaktičnega drevesa}
+\label{cfg_1}
+\end{center}
+\end{figure}
+Konkatenacija oznak listov drevesa v smeri od leve proti desni je imenovana \textbf{rezultat} razlčenitvenega drevesa \ang{yield}. Primer: izplen drevesa na sliki~\ref{cfg_1} je $(())()$.
+CFG je \textbf{dvoumen} \ang{ambiguous}, če je v jeziku beseda, ki je rezultat dveh ali večih različnih razčlenitvenih dreves, primer lahko vidimo na sliki~\ref{cfg_2}, katerih rezultat je $()()()$. Dvoumnost je lastnost gramatike in ne jezika. Primer: za usklajene oklepaje obstaja še ena CFG, ki ni dvoumna, $B\rightarrow (RB | \epsilon; R\rightarrow )|(RR$, $B$ je njen začetni simbol, $R$ pa generira besede, ki imajo en zaklepaj več. Primer izgradnje najbolj leve derivacije za $(())()$ je opisan v prosojnicah na strani 142, načeloma pa samo sledimo rezultatu od leve proti desni in izbiramo pripadajoče derivacije.
+\begin{figure}[h!tbp]
+\begin{center}
+\includegraphics[width=110mm]{img/cfg_2.png}
+\caption{Primer dveh sintaktičnih dreves z enakim rezultatom $()()()$}
+\label{cfg_2}
+\end{center}
+\end{figure}
+Dobro bi bilo, če bi obstajala možnost vsaki dvoumni gramatiki le-to odpraviti. Žal so nekateri CLF dvoumni po naravi \ang{inherently ambiguous}, torej je vsaka gramatika tega jezika dvoumna. Primer takega jezika je $\{0^i1^j2^k | i=j or j=k\}$~\ref{cfg_3}.
+\begin{lstlisting}[caption={Primer dvoumne gramatike za $\{0^i1^j2^k | i=j or j=k\}$}, label={cfg_3}]
+D -> AB | CD
+A -> 0A1 | 01   # A generira enako stevilo 0 in 1
+B -> 2B | 2     # B generira neko stevilo 2
+C -> 0C | 0     # C generira neko stevilo 0
+D -> 1D2 | 12   # D generira enako stevilo 1 in 2
+# primer dveh derivacij enake besede
+S => AB => 01B => 012
+S => CD => 0D  => 012
+\end{lstlisting}
+CFG je zapisana v Chomskijevi normalni obliki \ang{Chomsky normal form -- CNG}, če je vsaka produkcija ali $A\rightarrow BC$ (desna stran sta dve spremenljivki) ali $A \rightarrow a$ (desna stran je en terminal). Če je $L$ CFL, potem ima $L-\{\epsilon\}$ CFG v CNF.
+\textbf{Skladovni avtomat} \ang{pushdown automata -- PDA} je avtomat ekvivalenten CFG v moči definiranja jezikov. Nedeterminističen PDA lahko definira vse CFL, determinističen PDA pa se uporablja pri razčlenjevalnikih \ang{parser} in posledično pri večini programskih jezikov. PDA so podobni $\epsilon-NFA$, dodatno lahko uporabljajo s skladom. Premike definirajo trenutno stanje, vhodni simbol in simbol, ki je trenutno na vrhu sklada. Nedeterministična oblika PDA lahko izbira med svojimi naslednjimi stanji. Pri vsaki izbiri lahko spremeni stanje in/ali zamenja zgornji simbol sklada s sekvenco nič ali več simbolov (0 = pop, več je zaporedje push). Formalno je opisan z:
+\begin{enumerate}[topsep=0pt,itemsep=0pt,parsep=0pt]
+\item končno množico stanj $Q$
+\item vhodno abecedo $\Sigma$
+\item abecedo sklada $\Gamma$
+\item prehodno funkcijo $\sigma$
+\item začetnim stanjaem $q_0 \in Q$
+\item začetnim simbolom $Z_0 \in \Gamma$
+\item množico končnih stanj $F \subseteq Q$
+\end{enumerate}
+Konvencije:
+\begin{enumerate}[topsep=0pt,itemsep=0pt,parsep=0pt]
+\item $a, b, c$,\ldots so vhodni simboli, možen je tudi $\epsilon$
+\item $\ldots, X, Y, Z$ so simboli na skladu
+\item $\ldots, w, x, y, z$ so vhodne besede
+\item $\alpha, \beta, \dots$ so besede simbolov sklada
+\end{enumerate}
+Rezultat prehodne funkcije $\sigma(q, a, Z)$ je množica akcij oblike $(p, \alpha)$, pri katerih je $p$ stanje in $\alpha$ beseda simbolov sklada. Za vsako akcijo $(p, \alpha)$ v $\sigma(q, a, Z)$ lahko PDA v stanju $q$, ko je $a$ vhodni simbol in $Z$ na vrhu sklada: spremeni trenutno stanje v $p$, odstrani $a$ iz vhodne besede, zamenja $Z$ na vrhu sklada z $\alpha$.
+Primer: sestaviti skušamo PDA, ki sprejme $\{ 0^n1^n | n \ge 0\}$. Stanja so $q$ -- začetno stanje, v katerm smo zaenkrat videli eno ničlo, $p$ -- v tem stanju smo videli vsaj eno enko in bomo sedaj sprejemali samo še enke in $f$ -- končno stanje, v katerem sprejmemo besedo. Simboli sklada: $Z_0$ je začetni simbol, ki predstavlja dno sklada, $X$ je oznaka, s katero bomo šteli število ničel na vhodu. Možne tranzicije so: $\sigma(q,0,Z_0)=\{(q, XZ_0)\}$, $\sigma(q,0,X)=\{(q, X)\}$ (s tema dvema praviloma potisnemo na sklad en $X$ za vsako prebrano 0), $\sigma(q,1,X)=\{(p, \epsilon)\}$ (ko vidimo ena, se premaknemo v stanje $p$ in odstranimo en $X$), $\sigma(p,1,X)=\{(p, \epsilon)\}$ (odstranimo en X za vsako 1) in $\sigma(p,\sigma,Z_0)=\{(f,Z_0)\}$ (prehod v končno stanje)\footnote{Simulacijo delovanja PDA si lahko ogledamo na prosojnici 165}.
+\subsection{Lastnosti CFL}
+Ko govorimo o CFL, govorimo o predstavitvi CFL s CFG ali PDA. Pri obravnavi odločitvenih lastnosti imamo algoritme, ki nekatere probleme rešijo (opisani so kasneje), ne znamo pa odgovoriti na vprašanja ali sta dva CFL enaka in ali sta dva CFL disjunktna.
+\begin{description}[topsep=0pt,itemsep=0pt,parsep=0pt]
+\item[Problem praznosti] Ali v regularnem jeziku $L$ sploh so besede? \\
+Obravnavan je na enak način, kot problem praznosti pri regularnih jezikih.
+\item[Vprašanje vsebovanosti] Je beseda $w$ element jezika $L(G)$? \\
+Predpostavljamo, da je $G$ v $CNF$ obliki (Chomsky normal form), sicer ga moramo v njo pretvoriti. Problem rešimo z algoritmom \textbf{CYK}, ki je primer dinamičnega programiranja zahtevnosti $O(n^3), n=|w|$.
+\item[Problem neskončnosti] Je regularen jezik $L$ neskončen?
+Neskončnost obravnavano podobno kot pri regularnih jezikih s konstanto $n$ leme o napihovanju in iskanjem besed dolžine med $n$ in $2n-1$, katerih obstoj pomeni, da je jezik neskončen\footnote(tu je obravnavan algoritem, za katerega pri regularnih izrazih trdijo, da ni uporaben in predlagajo iskanje ciklov).
+\end{description}
+\subsubsection{Algoritem \textbf{CYK}}
+Algoritem za jezik $L$ zapisan v CNF ugotovi, ali je neka beseda $w \in L(G)$. To stori z izgradnjo tabele~\ref{cfg_4}, s pomočjo katere nato iterativno preverja, ali je možno posamezen del besede $w$ generirati. Za vsako polje $X_{ij}$ v tabeli, ki predstavlja podniz besede $w$ dolžine $j$, ki se začne na poziciji $i$ skušamo ugotoviti, ali drži $A\rightarrow X_{ij}$. Če uspemo dokazati, da drži $S\rightarrow X_{1n}$ (končna beseda), to pomeni, da je $w \in L$. Da to dokažemo z indukcijo, mora najprej v gramatiki $G$ obstajati produkcija $A\rightarrow w_i$, ki ustvari vse začetne simbole besede $w$. Za vsako naslednjo pozicijo $X_{ij}$ mora obstajati takšen $k$, da lahko konkateniramo $X_{ik}$ in $X_{i+k,j-k}$ ter da velja naslednje: $i \le k < j$ in $X_{ij} \rightarrow X_{ik}X_{k+1,j}$. Če je v zadnjem polju med spremenljivkami, ki lahko generirajo to besedo, tudi začetni simbol, smo dokazali, da besedo $w$ lahko generiramo z $G$.
+Pri rabi tega algoritma moramo biti zelo pozorni, da uporabimo indekse, kot so napisani v sliki~\ref{cfg_4}, saj v nasprotnem primeru indeksi niso pravilni.
+\begin{figure}[!ht]
+\begin{minipage}{0.39\linewidth}
+  \includegraphics[width=40mm]{img/cfg_4.png}
+\caption{Primer tabele CYK, v knjigi je obrnjena ravno obratno kot v prosojnicah}
+\label{cfg_4}
+\end{minipage}
+\hfill
+\begin{minipage}{0.59\linewidth}
+  \includegraphics[width=90mm]{img/cfg_5.png}
+\caption{Primer reševanja tabele CYK}
+\label{cfg_5}
+\end{minipage}
+\end{figure}
+Če pogledamo primer na sliki~\ref{cfg_5}, lahko vidimo, da so v prvi vrstici zapisane spremenljivke, s katerimi lahko generiramo posamezne simbole besede.
+V vsaki naslednji iteraciji nato skušamo med derivacijami na levi najti kombinacijo spremenljivk, ki jo lahko sestavimo iz ponujenih. V z rdečo obkroženem primeru gledamo, ali se pojavi katera od konkatenacij $\{AA, AC, CA, CC\}$. Obstaja $B\rightarrow CC$, zato v polje $X_{1,2}$ zapišemo $B$.
+Z zeleno je obkrožen korak na naslednji stopnji. Pri tej skupaj kombiniramo podčrtane spremenljivke druge in spremenljivke s prve stopnje, vseh možnih je $\{BA, BC, AB, CB\}$.
+Opazimo lahko, da se pojavita kombinaciji $AB$ in $BC$, zato v $X_{1,3}$ dodamo $S$ in $A$. Za $X_{2,4}$ lahko iz podčrtanih elementov, najprej dveh $B$ in tano še $\{A,C\}$ in $S$ generiramo $\{BB, AS, CS\}$, od katerih se nobena ne pojavi med pravili za generiranje. Zaradi tega polje $X_{2,4}$ ostane prazno.
+V $X_{1,4}$ lahko zapišemo $S$, ker lahko s $X_{1,3}$ in $X_{4,4}$ pri $k=3$ začetni simbol uspešno generiramo. Ker smo na zadnji stopnji simbol uspešno generirali smo dokazali, da je beseda $aaab \in L$.
+Menim, da sta ti dve razlagi dovolj, če so zadeve še vedno nejasne, je v prosojnicah od strani 182 naprej še psevdokoda programa.
+\subsection{Lastnosti zaportja CLF}
+CLF so zaprti z operacijami unije, konkatenacije in Kleenovega zaprtja. Zaprti so tudi za obrate, homomorfizme in obratne homomorfizme, ne pa za presek in razliko.
+\subsection{Notacija BNF}
+Gramatike za programske jezike so pogosto pisane v BNF notaciji \ang{Backus-Naur Form}:
+\begin{itemize}[topsep=0pt,itemsep=0pt,parsep=0pt]
+\item Spremenljivke so besede v oglatih oklepajih $<\ldots>$, terminali so pogosto nizi večih znakov označeni s \textbf{krepko} ali \underline{podčrtani}. 
+\item Namesto simbola $\rightarrow$ se uporablja $::=$ in več produkcij z enako levo stranjo lahko ločimo s simbolom $|$, ki predstavlja \emph{ali}, npr: $S\rightarrow 0S1 | 01$ za prej obravnavani primer.
+\item Simbol $\dots$ uporabljamo za pomen \emph{ena ali več}. Primer: $<$digit$>::=0|1|2|3|4|5|6|7|8|9; <$unsigned integer$>::=<$digit$>\dots$. Formalno simbol pomeni \emph{zamenjaj $\alpha$ z novo spremenljivko $A$ in produkcijo $A\rightarrow A\alpha|\alpha$}.
+\item Z $[\dots]$ obdamo simbol, da ga napravimo opcijskega. Primer: $<$statement$> ::= $\textbf{if} $<$condition$>$ \textbf{then} $<$statement$> [; $\textbf{else} $<$statement$>]$. $[\alpha]$ se torej formalno zamneja z novo spremenljivko $A$ in produkcijo $A\rightarrow \alpha|\epsilon$.
+\item Z $\{...\}$ obdamo sekvenco simbolov, ki jo želimo obravnavati kot enoto, tipično ji sledijo $\dots$. Primer: $<$statement list$> ::= <$statement$> [\{;<$statement$>\}\ldots]$.
+\end{itemize}
+ 
+  
+  
+\section{Chomskyjeva hierarhija jezikov}
+\begin{figure}[h!tbp]
+\begin{center}
+\includegraphics[width=110mm]{img/ch_1.png}
+\caption{Chomskyjeva hierarhija jezikov}
+\label{ch_1}
+\end{center}
+\end{figure}
+Hierarhijo razredov jezikov, kakršno je predlagal Noam Chomsky, lahko vidimo na sliki~\ref{ch_1}. Razrede je razdelil na tipe glede na njihove omejitve:
+\begin{description}[topsep=0pt,itemsep=0pt,parsep=0pt]
+\item[Gramatike tipa 0] Omejitve produkcije (jih ni): $\alpha\rightarrow\beta$ \\
+Vključujejo vse formalne gramatike brez omejitev. Generirajo lahko vse jezike, ki jih prepozna Turnigov stroj, znani so tudi kot \textbf{rekurzivno preštevni jeziki} \ang{recursively enumerable languages}.
+\item[Gramatike tipa 1] Omejitve produkcije: $\alpha A \beta \rightarrow \alpha \gamma \beta$ \\
+Gramatike tipa 1 opisujejo \textbf{kontekstno odvisne jezike}. Njihova omejitev je, da v njihovem generatorju $A$ nima terminalov ter da $\gamma$ ni prazen. Opisujemo jih z linearno omejenimi avtomati \ang{	linear-bounded non-deterministic Turing machine}.
+\item[Gramatike tipa 2] Omejitve produkcije: $A\rightarrow\alpha$ \\
+Opisujejo kontekstno neodvisne jezike, pri katerih morajo biti leve strani produkcijskih pravil spremenljivke. Jezike lahko opišemo z nedeterminističnimi skladovnimi avtomati.
+\item[Gramatike tipa 3] Omejitve produkcije: $A\rightarrow a$ in $A\rightarrow aB$
+Opisujejo regularne jezike, ki smo jih že spoznali. Opisujejo jih končni avtomati.
+\end{description}
+\section{Problem neodločljivosti}
+Podatkovni tipi so zelo pomembno programersko orodje, a na neki drugi ravni obstaja samo en tip, ki ga lahko razumemo kot integer ali string. Nize ASCII ali Unicode znakov lahko predstavimo kot binarne stringe z 8 oz. 16 biti na znak. Binarni nizi lahko pojmujemo kot cela števila (integers), zaradi tega je smiselno govoriti o \emph{i-tem nizu}\footnote{Ta celoten del je v prosojnicah katastrofalno slabo razložen. Nekaj več o vsem tem je mogoče prebrati na Wikipediji, članek o Godelovem številčenju \url{http://en.wikipedia.org/wiki/G\%C3\%B6del\_numbering}}.
+Če govorimo o binarni predstavitvi, potem so nizi 101, 0101, 00101,\dots vsi razumljeni kot \emph{peti niz}. Zaradi je pred vse nize pred pretvorbo dodana 1 in posledično iz prejšnjih števil dobimo 13., 12. in 37. niz. Primer: če je slika predstavljena v formatu GIF, je GIF file samo nek dolg niz, ki ga lahko pretvorimo v binarno obliko. Binarni niz pretvorimo v število in dobimo \emph{i-to sliko.}
+Enako lahko storimo s programi, ki so samo zaporedje ASCII znakov. Pretvorimo jih lahko v \emph{i-ti program}.
+Končna množica je množica z omejenim številom elementov. Nemogoče je najti njeno strogo podmnožico, ki bi imela enako število elementov. Pri neskončnih množicah je moč najti 1-1 preslikavo med njo samo in njeno strogo podmnožico. Primer: množica naravnih števil je neskončna množica. Množica sodih naravnih števil je njena podmnožica in med njima obstaja preslikava $1\leftrightarrow 2, 2\leftrightarrow 4, 3\leftrightarrow 6,\dots$.
+Števna množica je množica z 1-1 preslikavo \ang{correspondence} s pozitivnimi naravnimi števili. Vse števne množice so neskončne. Primeri takih množic: vsi integerji, množica vseh binarnih nizov, množica Java programov.
+Oštevilčenje \ang{enumeration} množice je 1-1 preslikava med množico in pozitivnimi celimi števili, posledično imamo oštevilčenje za nize, programe, dokaze, pare števil,\ldots\footnote{tu se sklicujejo na še nekaj primerov, ki sem jih izpustil.}.
+So jeziki preko $\{0,1\}^*$ števni? Odgovor je ne. Če bi lahko oštevilčili vse jezike preko $\{0,1\}^*$, bi lahko govorili o \emph{i-tem jeziku}. Jezik $L = \{ w | w$ je i-ti binarni niz in $w$ ni med i-timi jeziki$\}$. L je jezik preko $\{0,1\}^*$, posledično je j-ti jezik za neko število j. Če  je $x$ j-ti niz, je $x$ v $L$? Če je, potem $x$ ni v $L$ zaradi definicije $L$ in če ni, potem $x$ je v $L$ zaradi njegove definicije. Prišli smo do protislovja in posledično je naša predpostavka, da lahko jezike oštevilčimo, napačna.
+Nek problem je odločljiv, če obstaja algoritem, ki nanj odgovori, formalno to pomeni, da obstaja Turingov stroj, ki se konča ob vseh možnih vhodih, ne glede na to, ali so pravilni ali ne. Sicer je problem neodločljiv.
+\subsection{Postov korespondenčni problem}
+Postov korespondenčni problem je zaradi svoje \emph{preprostosti} najbolj pogosto uporabljen dokaz neodločljivosti. 
+Vhod problema sta dva končna seznama besed $\alpha_q,\dots,\alpha_N$ in $\beta_1,\dots,\beta_N$ neke abecede $A$ z vsaj dvema simboloma. Zanima nas, ali obstaja algoritem, ki bi našel nek $k$ in zanj zaporedje indeksov $i_1,\dots,i_k$, da bi veljalo $\alpha_{i_1} \ldots \alpha_{i_k} = \beta_{i_1} \ldots \beta_{i_k}.$ Če tak algoritem obstaja, je problem odločljiv, sicer ni.
+Odgovor je, da tak algoritem ne obstaja, dokaz pa je prekleto dolg, knjiga mu nameni 10 strani (poglavje 9.4), nekoliko krajši je na \href{http://en.wikipedia.org/wiki/Post_correspondence_problem}{Wikipediji}, ne verjamem pa, da bo to ob poplavi ostalih zadev potrebno znati.
+\section{Turingov stroj}
+Cilj teorije o Turingovih strojih je dokazati, da nekateri jeziki nimajo algoritmov.
+Turingov stroj \ang{Turing Machine -- TM} je formalno definiran z:
+\begin{enumerate}[topsep=0pt,itemsep=0pt,parsep=0pt]
+\item končno množico stanj $Q$
+\item vhodno abecedo $\Sigma$
+\item abecedo traka $\Gamma$ (vključuje $\Sigma$)
+\item prehodno funkcijo $\sigma$
+\item začetnim stanjaem $q_0 \in Q$
+\item praznim simbolom $B \in \Gamma-\Sigma$
+\item množico končnih stanj $F \subseteq Q$
+\end{enumerate}
+Konvencije:
+\begin{enumerate}[topsep=0pt,itemsep=0pt,parsep=0pt]
+\item $a, b, c$,\ldots so vhodni simboli
+\item $\ldots, X, Y, Z$ so simboli traka
+\item $\ldots, w, x, y, z$ so vhodne besede
+\item $\alpha, \beta, \dots$ so besede simbolov traka
+\end{enumerate}
+Prehodna funkcija $\sigma(q, Z)$ sprejme dva argumenta, trenutno stanje $q \in Q$ in trenutni simbol $Z \in \Gamma$. Njen rezultat je ali nedefiniran ali oblike $(p, Y, D)$, pri čemer je $p$ novo stanje, $Y$ nov simbol na traku in $D$ smer, levo $L$ ali desno $R$. Glede na rezultat prehodne funkcije v stanju $q$ ob prebranem $Z$ pod bralno glavo lahko stroj: spremeni stanje v $p$, zamenja $Z$ z $Y$ na traku in/ali premakne glavo za ena v smeri $D$.
+Na začetku procesiranja je trak Turingovega stroja sestavljen iz niza vhodnih simbolov obkroženih z neskončno praznimi vrednostmi v obeh smereh. TM je na začetnem stanju in njegova glava je na najbolj levem vhodnem simbolu. Opis nekega trenutnega stanja stroja je niz $\alpha q \beta$, pri čemer sta $\alpha$ in $\beta$ trak med najbolj levim in najbolj desnim nepraznim simbolom. Stanje $q$ je takoj levo od pravkar prebranega simbola, tja ga je stroj zapisal, da si zapomni s kakšno kombinacijo stanja in vhodnega simbola je prišel do tja, kamor je (zapisan simbol mora združevati informacijo o stanju in vhodnem simbolu). Če je $q$ desni konec besede, je pravkar prebrani simbol prazen $B$.
+Spremembe stanja oz. premike TM lahko simboliziramo z $\vdash$ za \emph{postane z enim premikom} in $\vdash^*$ za \emph{postane z nič ali več premiki}.
+Primer: Turingov stroj $M = (Q=\{q(start), f(final)\}, \Sigma=\{0,1\}, \Gamma=\{0,1,B\}, \sigma, q, B, \{f\})$ s prehodno funkcijo $\sigma(q, 0) = (q, 0, R)$, $\sigma(q, 1) = (f, 0, R)$, $\sigma(q, B) = (q, 1, L)$. Njegovo delovanje je naslednje: TM bere vhode v desno in išče 1. Če jo najde, jo spremeni v 0, preide v končno stanje $f$ in se ustavi. Če doseže prazno vrednost, jo spremeni v 1 in se premakne v levo. Sliki \ref{tm_1} in \ref{tm_2} prikazujeta začetno in končno stanje njegovega delovanja.
+Delovanje lahko opišemo s prehodi: q$00\vdash0$q$0\vdash00$q$\vdash0$q$01\vdash00$q$1\vdash000$f.
+\begin{figure}[!ht]
+\begin{minipage}{0.49\linewidth}
+  \includegraphics[width=70mm]{img/tm_1.png}
+\caption{Začetek delovanja TM}
+\label{tm_1}
+\end{minipage}
+\hfill
+\begin{minipage}{0,49\linewidth}
+  \includegraphics[width=70mm]{img/tm_2.png}
+\caption{Konced delovanja TM}
+\label{tm_2}
+\end{minipage}
+\end{figure}
+Formalen opis premikov: če je $\sigma(q, Z) = (p, Y, R)$, potem $\alpha q Z \beta \vdash \alpha Y p \beta$ (če je $Z=B$, potem $\alpha q \vdash \alpha Yp$), če je  $\sigma(q, Z) = (p, Y, L)$, potem $\alpha X q Z \beta \vdash \alpha p X Y \beta$   za katerikoli $X$ (dodatno $qZ \beta \vdash pBY$).
+TM definira jezik s končnim stanjem -- $L(M)=\{w | q_0w\vdash^*I$, pri čemerj je $I$ opis trenutnega stanja TM z končnim stanjem$\}$. TM lahko jezik sprejme tudi tako, da obstane -- $H(M)=\{w | q_0w\vdash^*I$, pri čemer iz trenutnega opisa stanja $I$ ni več mogočih premikov$\}$. Oba zapisa sta ekvivalentna: če je $L=L(M)$, potem obstaja TM $M'$, za katerega velja $L=H(M')$. Implikacija velja tudi v obratni smeri\footnote{Dokaz te teze je v prosojnicah na strani 241 in po mojem mnenju ni bistven.}.
+Opazimo lahko, da je razred jezikov, ki ga definirajo ustavljajoči se TM in TM s končnim stanjem enak. Ta razred jezikov imenujemo rekurzivno preštevni jeziki \ang{recursively enumerable languages}.
+\textit{\textbf{Tukaj sledi še sekcija o programerskih trikih za Turingov stroj, ki pa sem se jo odločil preskočiti, saj se mi zdi popolnoma odveč. Če mi kdorkoli sporoči, da je bilo to obravnavano na predavanjih, pa bom pregledal še to. }}
+\section{Rekurzivno števni jeziki}
+Nek algoritem je TM, ki se zagotovo ustavi, ne glede na to, ali vhod sprejme ali ne. Če je $L=L(M)$ za nek stroj $M$, ki je algoritem, rečemo, da je $L$ rekurziven jezik. Razlogov za to avtorji ne navajajo, domnevno so to zgodovinski termini.
+Primer: Vsak CFL in vsak regularni jezik sta rekurzivna, načeloma je rekurzivno skoraj vse, česar se lahko domislimo.
 \end{document}
-
-
-
-
-
 
