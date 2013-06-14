@@ -132,7 +132,7 @@ Jezik $L_1$ vsebuje vse besede sestavljene iz $n$ ničel, ki jim sledi $n$ enk, 
 \end{itemize}
 Zakaj ti jeziki niso regularni lahko razumemo s pomočjo leme o napihovanju \ang{pumping lemma}. Izpolnjevanje leme je namreč pogoj vseh regularnih jezikov.
 \begin{description}[topsep=0pt,itemsep=0pt,parsep=0pt]
-\item[\textbf{Lema o napihovanju za regularne jezike}]  Naj bo $L$ regularen jezik. Obsajati mora konstanta $n$, odvisna od $L$, da za vsako besedo $w \in L$, $|s| \geq n$ lahko najdemo razdelitev v tri besede $w=xyz$, da velja:
+\item[\textbf{Lema o napihovanju za regularne jezike}]  Naj bo $L$ regularen jezik. Obsajati mora konstanta $n$, odvisna od $L$, da za vsako besedo $w \in L$, $|w| \geq n$ lahko najdemo razdelitev v tri besede $w=xyz$, da velja:
 \begin{enumerate}[topsep=0pt,itemsep=0pt,parsep=0pt]
 \item $y \neq \epsilon$
 \item $|xy| \leq n$
@@ -167,7 +167,7 @@ Vsak DFA lahko spremenimo v NFA tako, da le-ta sprejme enak jezik. Prehodno funk
 Velja tudi obratna relacija, vsak NFA lahko pretvorimo v DFA, ki bo sprejel enak jezik. Za NFA s $Q$ stanji, vhodom $\Sigma$, tranzicijsko funkcijo $\sigma_N$, začetnim stanjem $q_0$ in končnimi stanji $F$ ustvarimo ekvivalenten DFA z $2^Q$ stanji (množica vseh podmnožic $Q$) in pripadajočo prehodno funkcijo $\sigma_D$. Ostali parametri ostanejo enaki.
 \subsection{Povzetek}
 DFA in NFA sprejmejo enako množico jezikov, regularne jezike. NFA lažje zasnujemo, saj imajo eksponentno manj stanj kot DFA, a NFA ni mogoče implementirati, DFA pa lahko.
-\pagebreak
+
 \section{Regularni izrazi}
 Regularni izrazi \ang{regular expressions -- RE} so algebraičen način opisa jezikov. Opisujejo natanko regularne jezike. Če je $E$ regularni izraz, je $L(E)$ jezik, ki ga definira.
 \subsection{Definicija}
@@ -186,7 +186,7 @@ Na zaporedje operacij lahko vplivamo z oklepaji, sicer pa si po prednosti sledij
 \item $L(\mathbf{01+0}) = \{01, 0\}$
 \item $L(\mathbf{0(1+0)}) = \{01, 00\}$
 \item $L(\mathbf{0}^*) = \{\epsilon, 0, 00, \ldots\}$
-\item $L(\mathbf{(0+10)^*(\epsilon+1}) =$ vse besede ničel in enk z dvema zaporednima enkama
+\item $L(\mathbf{(0+10)^*(\epsilon+1}) =$ vse besede ničel in enk brez dveh zaporednih enk
 \end{itemize}
 Pokazati želimo, da za vsak ER obstaja avtomat, ki sprejme enak jezik; to bomo pokazali z najmočnejšimi $\epsilon$-NFA avtomati\footnote{Teh avtomatov prosojnice ne obravnavajo, so pa v knjigi.}. Pokazati želimo tudi obratno, da za vsak avtomat obstaja RE, ki definira njegov jezik, to bomo storili z DFA kot najbolj restriktivnim tipom avtomatov.
 \begin{figure}[h!tbp]
@@ -216,7 +216,7 @@ Unija in konkatenacija se obnašata podobno kot seštevanje in množenje. + je k
 \item[$\epsilon$ je nevtralni element konkatenacije] $\epsilon R = R \epsilon = R$
 \item[$\emptyset$ je nasprotni element konkatenacije] $\emptyset R = R \emptyset = \emptyset$
 \end{description}
-\pagebreak
+
 \section{Regularni jeziki}
 \textbf{Razred jezika} \ang{language class} je množica jezikov. Obstaja jih več vrst, trenutno poznamo samo regularne jezike. Razredi jezikov imajo dva pomembna tipa lastnosti: odločitvene lastnosti \ang{decision properties} in lastnosti zaprtij \ang{closure properties}. Obstaja tudi več načinov predstavitve jezikov, načeloma jih delimo na formalne in neformalne. Primeri formalnih jezikov je zapis le-teh z regularnimi izrazi ali avtomati. Neformalen zapis pa je logični izraz ali opis besed, npr. \emph{"množico sestavljajo besede z enakim številom enk in ničel"}.
 Sem formalno spada tudi zgoraj opisana lema o napihovanju, ki se jo uporablja za preverjanje regularnosti nekega jezika.
@@ -279,7 +279,7 @@ CFG je \textbf{dvoumen} \ang{ambiguous}, če je v jeziku beseda, ki je rezultat 
 \end{figure}
 Dobro bi bilo, če bi obstajala možnost vsaki dvoumni gramatiki le-to odpraviti. Žal so nekateri CLF dvoumni po naravi \ang{inherently ambiguous}, torej je vsaka gramatika tega jezika dvoumna. Primer takega jezika je $\{0^i1^j2^k | i=j or j=k\}$~\ref{cfg_3}.
 \begin{lstlisting}[caption={Primer dvoumne gramatike za $\{0^i1^j2^k | i=j or j=k\}$}, label={cfg_3}]
-D -> AB | CD
+S -> AB | CD
 A -> 0A1 | 01   # A generira enako stevilo 0 in 1
 B -> 2B | 2     # B generira neko stevilo 2
 C -> 0C | 0     # C generira neko stevilo 0
@@ -316,7 +316,7 @@ Obravnavan je na enak način, kot problem praznosti pri regularnih jezikih.
 \item[Vprašanje vsebovanosti] Je beseda $w$ element jezika $L(G)$? \\
 Predpostavljamo, da je $G$ v $CNF$ obliki (Chomsky normal form), sicer ga moramo v njo pretvoriti. Problem rešimo z algoritmom \textbf{CYK}, ki je primer dinamičnega programiranja zahtevnosti $O(n^3), n=|w|$.
 \item[Problem neskončnosti] Je regularen jezik $L$ neskončen?
-Neskončnost obravnavano podobno kot pri regularnih jezikih s konstanto $n$ leme o napihovanju in iskanjem besed dolžine med $n$ in $2n-1$, katerih obstoj pomeni, da je jezik neskončen\footnote(tu je obravnavan algoritem, za katerega pri regularnih izrazih trdijo, da ni uporaben in predlagajo iskanje ciklov).
+Neskončnost obravnavano podobno kot pri regularnih jezikih s konstanto $n$ leme o napihovanju in iskanjem besed dolžine med $n$ in $2n-1$, katerih obstoj pomeni, da je jezik neskončen\footnote{tu je obravnavan algoritem, za katerega pri regularnih izrazih trdijo, da ni uporaben in predlagajo iskanje ciklov}.
 \end{description}
 \subsubsection{Algoritem \textbf{CYK}}
 Algoritem za jezik $L$ zapisan v CNF ugotovi, ali je neka beseda $w \in L(G)$. To stori z izgradnjo tabele~\ref{cfg_4}, s pomočjo katere nato iterativno preverja, ali je možno posamezen del besede $w$ generirati. Za vsako polje $X_{ij}$ v tabeli, ki predstavlja podniz besede $w$ dolžine $j$, ki se začne na poziciji $i$ skušamo ugotoviti, ali drži $A\rightarrow X_{ij}$. Če uspemo dokazati, da drži $S\rightarrow X_{1n}$ (končna beseda), to pomeni, da je $w \in L$. Da to dokažemo z indukcijo, mora najprej v gramatiki $G$ obstajati produkcija $A\rightarrow w_i$, ki ustvari vse začetne simbole besede $w$. Za vsako naslednjo pozicijo $X_{ij}$ mora obstajati takšen $k$, da lahko konkateniramo $X_{ik}$ in $X_{i+k,j-k}$ ter da velja naslednje: $i \le k < j$ in $X_{ij} \rightarrow X_{ik}X_{k+1,j}$. Če je v zadnjem polju med spremenljivkami, ki lahko generirajo to besedo, tudi začetni simbol, smo dokazali, da besedo $w$ lahko generiramo z $G$.
@@ -375,7 +375,7 @@ Opisujejo regularne jezike, ki smo jih že spoznali. Opisujejo jih končni avtom
 \end{description}
 \section{Problem neodločljivosti}
 Podatkovni tipi so zelo pomembno programersko orodje, a na neki drugi ravni obstaja samo en tip, ki ga lahko razumemo kot integer ali string. Nize ASCII ali Unicode znakov lahko predstavimo kot binarne stringe z 8 oz. 16 biti na znak. Binarni nizi lahko pojmujemo kot cela števila (integers), zaradi tega je smiselno govoriti o \emph{i-tem nizu}\footnote{Ta celoten del je v prosojnicah katastrofalno slabo razložen. Nekaj več o vsem tem je mogoče prebrati na Wikipediji, članek o Godelovem številčenju \url{http://en.wikipedia.org/wiki/G\%C3\%B6del\_numbering}}.
-Če govorimo o binarni predstavitvi, potem so nizi 101, 0101, 00101,\dots vsi razumljeni kot \emph{peti niz}. Zaradi je pred vse nize pred pretvorbo dodana 1 in posledično iz prejšnjih števil dobimo 13., 12. in 37. niz. Primer: če je slika predstavljena v formatu GIF, je GIF file samo nek dolg niz, ki ga lahko pretvorimo v binarno obliko. Binarni niz pretvorimo v število in dobimo \emph{i-to sliko.}
+Če govorimo o binarni predstavitvi, potem so nizi 101, 0101, 00101,\dots vsi razumljeni kot \emph{peti niz}. Zaradi je pred vse nize pred pretvorbo dodana 1 in posledično iz prejšnjih števil dobimo 13., 21. in 37. niz. Primer: če je slika predstavljena v formatu GIF, je GIF file samo nek dolg niz, ki ga lahko pretvorimo v binarno obliko. Binarni niz pretvorimo v število in dobimo \emph{i-to sliko.}
 Enako lahko storimo s programi, ki so samo zaporedje ASCII znakov. Pretvorimo jih lahko v \emph{i-ti program}.
 Končna množica je množica z omejenim številom elementov. Nemogoče je najti njeno strogo podmnožico, ki bi imela enako število elementov. Pri neskončnih množicah je moč najti 1-1 preslikavo med njo samo in njeno strogo podmnožico. Primer: množica naravnih števil je neskončna množica. Množica sodih naravnih števil je njena podmnožica in med njima obstaja preslikava $1\leftrightarrow 2, 2\leftrightarrow 4, 3\leftrightarrow 6,\dots$.
 Števna množica je množica z 1-1 preslikavo \ang{correspondence} s pozitivnimi naravnimi števili. Vse števne množice so neskončne. Primeri takih množic: vsi integerji, množica vseh binarnih nizov, množica Java programov.
